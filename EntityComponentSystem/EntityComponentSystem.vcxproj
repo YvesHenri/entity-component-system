@@ -155,9 +155,8 @@
     <ClInclude Include="Component\Container\ComponentIntersection.hpp" />
     <ClInclude Include="Component\Container\ComponentIntersectionIterator.h" />
     <ClInclude Include="Component\Container\ComponentIntersectionIterator.hpp" />
-    <ClInclude Include="Component\View\ComponentView.h" />
-    <ClInclude Include="Component\View\PersistentView.h" />
-    <ClInclude Include="Component\View\View.h" />
+    <ClInclude Include="Component\Container\ComponentView.h" />
+    <ClInclude Include="Component\Container\ComponentView.hpp" />
     <ClInclude Include="Core\Component\Container\ComponentIntersection.h" />
     <ClInclude Include="Core\Component\Container\ComponentIntersection.hpp" />
     <ClInclude Include="Core\Component\Container\ComponentIntersectionIterator.h" />

@@ -30,7 +30,7 @@ namespace cs
 	* @return A reference to the newly created component.
 	*/
 	template <typename Component, typename... Args>
-	Component Entity::assign(Args&&... args) {
+	Component Entity::assign(Args&&... args) const {
 		return manager->assign<Component>(identifier, std::forward<Args>(args)...);
 	}
 
@@ -44,7 +44,7 @@ namespace cs
 	* invalid entity or if the entity already owns an instance of the given component.
 	*/
 	template <typename Component, typename... Components>
-	void Entity::assign(const Component& component, const Components&... components) {
+	void Entity::assign(const Component& component, const Components&... components) const {
 		manager->assign(identifier, component, components...);
 	}
 
@@ -67,7 +67,7 @@ namespace cs
 	* @return A reference to the newly created component.
 	*/
 	template <typename Component, typename... Args>
-	Component Entity::replace(Args&&... args) {
+	Component Entity::replace(Args&&... args) const {
 		return manager->replace<Component>(identifier, std::forward<Args>(args)...);
 	}
 
@@ -81,7 +81,7 @@ namespace cs
 	* invalid entity or if the entity doesn't own an instance of the given component.
 	*/
 	template <typename Component, typename... Components>
-	void Entity::replace(const Component& component, const Components&... components) {
+	void Entity::replace(const Component& component, const Components&... components) const {
 		manager->replace(identifier, component, components...);
 	}
 
@@ -100,8 +100,8 @@ namespace cs
 	* @return A reference to the newly created component.
 	*/
 	template <typename Component, typename... Args>
-	Component Entity::accomodate(Args&&... args) {
-		return manager->accomodate<Component>(identifier, std::forward<Args>(args)...);
+	Component Entity::save(Args&&... args) const {
+		return manager->save<Component>(identifier, std::forward<Args>(args)...);
 	}
 
 	/**
@@ -114,8 +114,8 @@ namespace cs
 	* invalid entity.
 	*/
 	template <typename Component, typename... Components>
-	void Entity::accomodate(const Component& component, const Components&... components) {
-		manager->accomodate(identifier, component, components...);
+	void Entity::save(const Component& component, const Components&... components) const {
+		manager->save(identifier, component, components...);
 	}
 
 	/**
@@ -150,7 +150,7 @@ namespace cs
 	/**
 	* @brief Returns the entity identifier.
 	*/
-	const std::uint32_t Entity::id() const {
+	std::uint32_t Entity::id() const {
 		return identifier;
 	}
 
@@ -166,7 +166,7 @@ namespace cs
 	*
 	* @return Actual version for this entity.
 	*/
-	const std::uint32_t Entity::version() const {
+	std::uint32_t Entity::version() const {
 		return manager->current(identifier);
 	}
 
@@ -212,61 +212,8 @@ namespace cs
 	* @return A reference to the component owned by the entity.
 	*/
 	template <typename Component>
-	Component& Entity::component() {
-		return const_cast<Component&>(const_cast<const Entity*>(this)->component<Component>());
-	}
-
-	/**
-	* @brief Returns a reference to the given component for this entity.
-	*
-	* @warning
-	* Attempting to use an invalid entity or to get a component from an entity
-	* that doesn't own it results in undefined behavior.<br/>
-	* An assertion will abort the execution at runtime in debug mode in case of
-	* invalid entity or if the entity doesn't own an instance of the given component.
-	*
-	* @tparam Component Type of component to get.
-	* @return A reference to the component owned by the entity.
-	*/
-	template <typename Component>
-	const Component& Entity::component() const {
+	Component& Entity::component() const {
 		return manager->component<Component>(identifier);
-	}
-
-	/**
-	* @brief Returns a reference to the given components for this entity.
-	*
-	* @warning
-	* Attempting to use an invalid entity or to get components from an entity
-	* that doesn't own them results in undefined behavior.<br/>
-	* An assertion will abort the execution at runtime in debug mode in case of
-	* invalid entity or if the entity doesn't own instances of the given
-	* components.
-	*
-	* @tparam Component Type of components to get.
-	* @return References to the components owned by the entity.
-	*/
-	template <typename... Components>
-	std::tuple<Components&...> Entity::components() {
-		return manager->components<Components...>(identifier);
-	}
-
-	/**
-	* @brief Returns a reference to the given components for this entity.
-	*
-	* @warning
-	* Attempting to use an invalid entity or to get components from an entity
-	* that doesn't own them results in undefined behavior.<br/>
-	* An assertion will abort the execution at runtime in debug mode in case of
-	* invalid entity or if the entity doesn't own instances of the given
-	* components.
-	*
-	* @tparam Component Type of components to get.
-	* @return References to the components owned by the entity.
-	*/
-	template <typename... Components>
-	std::tuple<const Components&...> Entity::components() const {
-		return manager->components<Components...>(identifier);
 	}
 
 	/**

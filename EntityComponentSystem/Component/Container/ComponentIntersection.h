@@ -1,6 +1,8 @@
 #ifndef COMPONENT_CONTAINER_COMPONENT_INTERSECTION_H
 #define COMPONENT_CONTAINER_COMPONENT_INTERSECTION_H
 
+#include <tuple>
+
 #include "ComponentIntersectionIterator.hpp"
 
 namespace cs
@@ -9,17 +11,18 @@ namespace cs
 	class ComponentIntersection
 	{
 	public:
-		ComponentIntersection(cs::ComponentCollection<Components>&... sets);
+		ComponentIntersection(cs::ComponentCollection<Components>&... collections);
 
 		ComponentIntersectionIterator begin();
 		ComponentIntersectionIterator end();
 
-		const ComponentIntersectionIterator begin() const;
-		const ComponentIntersectionIterator end() const;
+		template <typename Component>
+		ComponentCollection<Component>& get();
 
 	private:
-		const cs::Collection* smallest;
-		std::vector<const cs::Collection*> others;
+		cs::Collection* smallest;
+		std::vector<cs::Collection*> others;
+		std::tuple<ComponentCollection<Components>&...> all;
 	};
 }
 

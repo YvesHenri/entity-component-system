@@ -72,11 +72,11 @@ void accomodation(cs::EntityManager& m)
 	auto e1 = m.create(c1, c2);
 	auto e2 = m.create<int>(34);
 
-	e1.accomodate<int>(2); // Build and replace
-	e1.accomodate<float>(50.f); // Build and replace
-	e2.accomodate(c1); // Replace
-	e2.accomodate(c2); // Assign
-	e2.accomodate<double>(68.0); // Build and assign
+	e1.save<int>(2); // Build and replace
+	e1.save<float>(50.f); // Build and replace
+	e2.save(c1); // Replace
+	e2.save(c2); // Assign
+	e2.save<double>(68.0); // Build and assign
 
 	assert(e1.has<int>() && e1.component<int>() == 2);
 	assert(e1.has<float>() && e1.component<float>() == 50.f);
@@ -165,46 +165,29 @@ void capacities() {
 	e2.destroy();
 
 	assert(m.size() == 1U);
-	assert(m.capacity() == 3U);
-}
-
-void emptyness()
-{
-	cs::EntityManager m;
-
-	auto e1 = m.create<int>();
-	auto e2 = m.create<int>();
-	auto e3 = m.create<float>();
-
-	// Component emptyness
-	auto c1 = m.empty<int>();
-	auto c2 = m.empty<int, float>();
-	auto c3 = m.empty<int, double>();
-
-	// Entity emptyness
-	auto c4 = m.empty();
-
-	assert(!c1);
-	assert(!c2);
-	assert(c3);
-	assert(!c4);
-}
-
-void components(cs::EntityManager& m) {
-	auto e1 = m.create<int>(1);
-	auto e2 = m.create<float>(2.f);
-
-	e2.assign<double>(3.0);
-
-	auto c0 = e1.components<>();
-	auto c1 = e1.components<int>();
-	auto c2 = e2.components<float, double>();
 }
 
 void iteration(cs::EntityManager& m) {
-	m.each([](cs::Entity e) {
+	/*
+	m.each([](cs::Entity& e) {
 		printf("Iterating entity %d (v%d)...\n", e.id(), e.version());
 	});
+	*/
+
+	std::function<void(cs::Entity&, int&)> x = [](cs::Entity& e, int& i) {
+		printf("Entity %d has int component: %d \n", e.id(), i);
+	};
+	m.each<int>(x);
+
+	m.each<float>([](cs::Entity& e, float& i) {
+		printf("Entity %d has float component: %.2f \n", e.id(), i);
+	});
+
+	std::function<void(cs::Entity&, int&, float&)> y = [](cs::Entity& e, int& i, float& f) {
+		printf("Entity %d has both int and float components: %d (int) and %.2f (float) \n", e.id(), i, f);
+	};
+	m.each<int, float>(y);
+	
 }
 
 int main()
@@ -221,23 +204,17 @@ int main()
 	counting();
 	sizes();
 	capacities();
-	emptyness();
-	components(m);
-	//iteration(m);
+	iteration(m);
 
-	auto c1 = m.count<int>();
-	auto c2 = m.count<float>();
-	auto c3 = m.count<double>();
-	auto c4 = m.count<Position>();
+	cs::EntityManager manager;
 
-	m.each<int>([](auto e, int& i) {
-		printf("Entity %d has int component: %d \n", e, i);
-	});
-	m.each<float>([](auto e, float& i) {
-		printf("Entity %d has float component: %.2f \n", e, i);
-	});
-	m.each<int, float>([](auto e, int& i, float& f) {
-		printf("Entity %d has both int and float components: %d (int) and %.2f (float) \n", e, i, f);
+	cs::Entity e1 = manager.create<int>(1);
+	cs::Entity e2 = manager.create<int>(2);
+
+	e1.assign<float>(3.F);
+
+	manager.each<int, float>([](auto& e, auto& i, auto& f) {
+		printf("Entity %d has both int and float components: %d (int) and %.2f (float) \n", e.id(), i, f);
 	});
 
 	return getchar();

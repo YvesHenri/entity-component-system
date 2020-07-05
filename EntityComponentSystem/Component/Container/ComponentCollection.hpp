@@ -114,13 +114,13 @@ namespace cs
 	}
 
 	template <typename Component>
-	bool ComponentCollection<Component>::update(std::uint32_t value, const Component& component) {
+	bool ComponentCollection<Component>::replace(std::uint32_t value, const Component& component) {
 		return contains(value) ? components[indices[value] & ~OCCUPIED] = component, true : false; // Execute and return
 	}
 
 	template <typename Component>
-	void ComponentCollection<Component>::accomodate(std::uint32_t value, const Component& component) {
-		contains(value) ? update(value, component) : add(value, component);
+	void ComponentCollection<Component>::save(std::uint32_t value, const Component& component) {
+		contains(value) ? replace(value, component) : add(value, component);
 	}
 
 	template <typename Component>

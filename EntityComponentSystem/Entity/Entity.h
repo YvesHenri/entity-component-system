@@ -8,39 +8,35 @@ namespace cs
 	class Entity final
 	{
 	public:
-		static const int ID_MASK = 0xFFFFFF;
-		static const int VERSION_MASK = 0xFF;
-		static const int VERSION_SHIFT = 24;
-
 		Entity() = default;
 		Entity(const Entity&) = default;
 		explicit Entity(EntityManager* manager, std::uint32_t id);
 
-		Entity& operator=(const Entity&) = default;
+		Entity& operator=(const Entity&) = default;		
 		
-		void destroy();
 		bool valid() const;
+		void destroy();
 
-		const std::uint32_t id() const;
-		const std::uint32_t version() const;
-
-		template <typename Component, typename... Args>
-		Component assign(Args&&... args);
+		std::uint32_t id() const;
+		std::uint32_t version() const;
 
 		template <typename Component, typename... Args>
-		Component replace(Args&&... args);
+		Component assign(Args&&... args) const;
 
 		template <typename Component, typename... Args>
-		Component accomodate(Args&&... args);
+		Component replace(Args&&... args) const;
+
+		template <typename Component, typename... Args>
+		Component save(Args&&... args) const;
 
 		template <typename Component, typename... Components>
-		void assign(const Component& component, const Components&... components);
+		void assign(const Component& component, const Components&... components) const;
 
 		template <typename Component, typename... Components>
-		void replace(const Component& component, const Components&... components);
+		void replace(const Component& component, const Components&... components) const;
 
 		template <typename Component, typename... Components>
-		void accomodate(const Component& component, const Components&... components);
+		void save(const Component& component, const Components&... components) const;
 
 		template <typename Component, typename... Components>
 		void reset();
@@ -61,22 +57,17 @@ namespace cs
 		bool has(const Component& component, const Components&... components) const;
 
 		template <typename Component>
-		const Component& component() const;
-
-		template <typename Component>
-		Component& component();
-
-		template <typename... Components>
-		std::tuple<const Components&...> components() const;
-
-		template <typename... Components>
-		std::tuple<Components&...> components();
+		Component& component() const;
 
 		bool operator==(const Entity& other) const;
 		bool operator!=(const Entity& other) const;
 		bool operator< (const Entity& other) const;
 
 		operator bool() const;
+
+		static const int ID_MASK = 0xFFFFFF;
+		static const int VERSION_MASK = 0xFF;
+		static const int VERSION_SHIFT = 24;
 
 	private:
 		std::uint32_t identifier;

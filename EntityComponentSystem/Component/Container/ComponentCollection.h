@@ -2,6 +2,7 @@
 #define COMPONENT_CONTAINER_COMPONENT_SET_H
 
 #include <vector>
+#include <cstdint>
 
 namespace cs
 {
@@ -72,8 +73,8 @@ namespace cs
 		bool reset(std::uint32_t value);
 		bool remove(std::uint32_t value) override;
 		bool add(std::uint32_t value, const Component& component);
-		bool update(std::uint32_t value, const Component& component);
-		void accomodate(std::uint32_t value, const Component& component);
+		bool replace(std::uint32_t value, const Component& component);
+		void save(std::uint32_t value, const Component& component);
 
 		Component& get(std::uint32_t value);
 

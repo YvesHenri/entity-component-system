@@ -25,14 +25,14 @@ namespace cs
 		}
 
 	private:
-		static std::uint32_t id() noexcept {
+		static std::uint32_t entity() noexcept {
 			static std::uint32_t value = 0U;
 			return value++;
 		}
 
 		template <typename...>
 		static std::uint32_t generate() noexcept {
-			static std::uint32_t value = id();
+			static std::uint32_t value = entity();
 			return value;
 		}
 	};

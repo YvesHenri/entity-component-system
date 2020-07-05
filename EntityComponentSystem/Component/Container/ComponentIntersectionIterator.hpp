@@ -5,8 +5,10 @@
 
 namespace cs
 {
-	ComponentIntersectionIterator::ComponentIntersectionIterator(std::vector<const cs::Collection*> others, cs::Collection::IteratorConst begin, cs::Collection::IteratorConst end)
-		: others(others), begin(begin), end(end)
+	ComponentIntersectionIterator::ComponentIntersectionIterator(std::vector<cs::Collection*> others, cs::Collection::IteratorConst begin, cs::Collection::IteratorConst end)
+		: collections(others)
+		, begin(begin)
+		, end(end)
 	{
 		if (begin != end && !intersects())
 			++(*this);
@@ -34,10 +36,10 @@ namespace cs
 	}
 
 	inline bool ComponentIntersectionIterator::intersects() const {
-		auto index = others.size();
+		auto index = collections.size();
 
 		// For all the other sets, check whether they have the smallest set's begin iterator value
-		for (const auto id = *begin; index && others[index - 1U]->contains(id); --index);
+		for (const auto entity = *begin; index && collections[index - 1U]->contains(entity); --index);
 
 		// Will only return true if index ever reaches 0 (both comparables contain it)
 		return index == 0U;
